@@ -11,8 +11,6 @@ app.use(cors());
 
   const optionList = getOptions()
 
-  console.log(optionList)
-
   app.get("/optionList", (req: any, res: any) => {
     res.json(optionList);
   });
