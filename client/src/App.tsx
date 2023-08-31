@@ -1,23 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './styles/App.scss';
-import ccxt from 'ccxt';
 import Select from "react-select";
+import axios from 'axios';
+
+const backendUrl = 'http://localhost:4000'
 
 export default function App() {
-  // React state to manage selected options
+  const [cryptioOptions, setCryptioOptions] = useState();
   const [selectedOptions, setSelectedOptions] = useState();
   const [error, setError] = useState(false)
 
-  // Array of all options
-  const optionList = [
-    { value: "Test", label: "Test" },
-    { value: "Test1", label: "Test1" },
-    { value: "Test2", label: "Test2" },
-  ];
-
-  const exchange = new ccxt.binance ()
-  exchange.setSandboxMode (true)
-  console.log(exchange)
+  useEffect(() => {
+    axios.get(`${backendUrl}/optionList`).then((response) => {
+      setCryptioOptions(response.data)
+    });
+  }, []);
 
   function handleInput(input: string) {
     if (input.length >= 30) {
@@ -27,6 +24,7 @@ export default function App() {
   }
 
   function handleSelect(data: any) {
+    console.log(data)
     setSelectedOptions(data);
   }
 
@@ -37,7 +35,7 @@ export default function App() {
       </div>
       <div className="dropdown-container">
         <Select
-          options={optionList}
+          options={cryptioOptions}
           placeholder="Search cryptocurrency"
           value={selectedOptions}
           onChange={handleSelect}
