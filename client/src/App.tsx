@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import './styles/App.scss';
+import React, { useState, useEffect } from "react";
+import "./styles/App.scss";
 import Select from "react-select";
-import axios from 'axios';
-import DatePickerComponent from './components/DatePicker';
+import axios from "axios";
+import DatePickerComponent from "./components/DatePicker";
 
-const backendUrl = 'http://localhost:4000'
+const backendUrl = "http://localhost:4000";
 
 export default function App() {
   const [cryptioOptions, setCryptioOptions] = useState();
@@ -15,7 +15,7 @@ export default function App() {
 
   useEffect(() => {
     axios.get(`${backendUrl}/optionList`).then((response) => {
-      setCryptioOptions(response.data)
+      setCryptioOptions(response.data);
     });
   }, []);
 
@@ -26,9 +26,9 @@ export default function App() {
     console.log({
       month,
       day,
-      year
+      year,
     });
-    setMinDate(date)
+    setMinDate(date);
   }
 
   function getEndDate(date: any) {
@@ -38,27 +38,26 @@ export default function App() {
     console.log({
       month,
       day,
-      year
-    })
-    setMaxDate(date)
+      year,
+    });
+    setMaxDate(date);
   }
 
   function handleInput(input: string) {
     if (input.length >= 30) {
-      setError(true)
-    }
-    else setError(false)
+      setError(true);
+    } else setError(false);
   }
 
   function handleSelect(data: any) {
-    console.log(data)
+    console.log(data);
     setSelectedOption(data);
   }
 
   return (
     <div className="app">
-      <div className='input-error'>
-        {error === true ? 'There is no cryptocurrency with a name so long' : ''}
+      <div className="input-error">
+        {error === true ? "There is no cryptocurrency with a name so long" : ""}
       </div>
       <div className="dropdown-container">
         <Select
@@ -71,18 +70,23 @@ export default function App() {
           onInputChange={handleInput}
         />
       </div>
-      <div className='date-picker-container'>
+      <div className="date-picker-container">
         <div>
-          <DatePickerComponent label={'Select start date:'} 
-      onSelect={(date:any) => getStartDate(date)}
-       minDate={'none'} maxDate={maxDate} />
+          <DatePickerComponent
+            label={"Select start date:"}
+            onSelect={(date: any) => getStartDate(date)}
+            minDate={"none"}
+            maxDate={maxDate}
+          />
         </div>
-      <div>
-        <DatePickerComponent label={'Select end date:'}
-       onSelect={(date:any) => getEndDate(date)}
-       minDate={minDate} maxDate={'none'} />
-      </div>
-      
+        <div>
+          <DatePickerComponent
+            label={"Select end date:"}
+            onSelect={(date: any) => getEndDate(date)}
+            minDate={minDate}
+            maxDate={"none"}
+          />
+        </div>
       </div>
     </div>
   );
