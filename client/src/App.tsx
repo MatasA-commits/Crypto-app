@@ -23,11 +23,6 @@ export default function App() {
     const month = date.$d.getUTCMonth() + 1;
     const day = date.$d.getUTCDate() + 1;
     const year = date.$d.getUTCFullYear();
-    console.log({
-      month,
-      day,
-      year,
-    });
     setMinDate(date);
   }
 

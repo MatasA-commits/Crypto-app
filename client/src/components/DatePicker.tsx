@@ -17,8 +17,6 @@ const DatePickerComponent = ({
   minDate,
   maxDate,
 }: DatePickerComponentProps) => {
-  console.log(minDate);
-
   return (
     <>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
