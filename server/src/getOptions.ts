@@ -1,17 +1,23 @@
-import ccxt from "ccxt";
+import ccxt, { Dictionary, bitmart, Currency } from "ccxt";
 
-export default function getOptions() {
-  const exchange = new ccxt.binance();
-  exchange.setSandboxMode(true);
+type BitmartProps = Currency & {
+  name: string;
+};
 
-  function toValueLabelPairs([value, label]: [string, string]) {
-    return { value, label };
-  }
+export default async function getOptions() {
+  const exchange = new bitmart();
+  await exchange.loadMarkets(false);
+  const currencies: Dictionary<BitmartProps> =
+    exchange.currencies as Dictionary<BitmartProps>;
 
-  const currencies: [string, string] = exchange.commonCurrencies;
-  console.log(currencies);
+  const allCurrenciesValueLabelPairs = Object.entries(currencies).map(
+    (currency) => {
+      return {
+        value: currency[1].id,
+        label: currency[1].name,
+      };
+    }
+  );
 
-  const optionList = Object.entries(currencies).map(toValueLabelPairs);
-
-  return optionList;
+  return allCurrenciesValueLabelPairs;
 }

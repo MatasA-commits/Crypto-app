@@ -4,7 +4,7 @@ import Select from "react-select";
 import axios from "axios";
 import DatePickerComponent from "./components/DatePicker";
 
-const backendUrl = "http://localhost:4000";
+const backendUrl = "http://localhost:3600";
 
 export default function App() {
   const [cryptioOptions, setCryptioOptions] = useState();
@@ -63,6 +63,9 @@ export default function App() {
         <Select
           options={cryptioOptions}
           placeholder="Search cryptocurrency"
+          noOptionsMessage={() =>
+            !cryptioOptions ? "Loading options" : "No options"
+          }
           value={selectedOption}
           onChange={handleSelect}
           isSearchable={true}
