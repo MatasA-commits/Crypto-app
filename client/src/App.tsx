@@ -23,6 +23,7 @@ export default function App() {
     const month = date.$d.getUTCMonth() + 1;
     const day = date.$d.getUTCDate() + 1;
     const year = date.$d.getUTCFullYear();
+    const selecedDate = date.$d.toISOString();
     setMinDate(date);
   }
 
@@ -30,11 +31,13 @@ export default function App() {
     const month = date.$d.getUTCMonth() + 1;
     const day = date.$d.getUTCDate() + 1;
     const year = date.$d.getUTCFullYear();
-    console.log({
+    const selecedDate = date.$d.toISOString();
+    console.log(selecedDate);
+    /*     console.log({
       month,
       day,
       year,
-    });
+    }); */
     setMaxDate(date);
   }
 
@@ -72,7 +75,7 @@ export default function App() {
         <div>
           <DatePickerComponent
             label={"Select start date:"}
-            onSelect={(date: any) => getStartDate(date)}
+            onChangeFunction={(date: any) => getStartDate(date)}
             minDate={"none"}
             maxDate={maxDate}
           />
@@ -80,7 +83,7 @@ export default function App() {
         <div>
           <DatePickerComponent
             label={"Select end date:"}
-            onSelect={(date: any) => getEndDate(date)}
+            onChangeFunction={(date: any) => getEndDate(date)}
             minDate={minDate}
             maxDate={"none"}
           />

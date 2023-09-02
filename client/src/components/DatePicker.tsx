@@ -6,14 +6,14 @@ import "../styles/DatePicker.scss";
 
 interface DatePickerComponentProps {
   label: string;
-  onSelect: (date: any) => void;
+  onChangeFunction: (date: any) => void;
   minDate: any;
   maxDate: any;
 }
 
 const DatePickerComponent = ({
   label,
-  onSelect,
+  onChangeFunction: onSelect,
   minDate,
   maxDate,
 }: DatePickerComponentProps) => {
@@ -23,7 +23,7 @@ const DatePickerComponent = ({
         <p className="label">{label}</p>
         <DatePicker
           slotProps={{ textField: { size: "small" } }}
-          onChange={onSelect}
+          onChange={(date) => (date === null ? "" : onSelect(date))}
           minDate={"none" ? minDate : ""}
           disableFuture={true}
           maxDate={"none" ? maxDate : ""}
