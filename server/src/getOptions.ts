@@ -27,3 +27,21 @@ export async function getPricesPerDataRange() {
   const data = await exchange.fetchOHLCV("BTC/USDT", "1h", since);
   console.log(data);
 }
+
+function getDatesInRange(startDate: Date, endDate: Date) {
+  const date = new Date(startDate.getTime());
+
+  const dates = [];
+
+  while (date <= endDate) {
+    dates.push(new Date(date));
+    date.setDate(date.getDate() + 1);
+  }
+
+  return dates;
+}
+
+const startDate = new Date("2022-09-02T00:00:00.000Z");
+const endDate = new Date("2023-09-02T00:00:00.000Z");
+
+console.log(getDatesInRange(startDate, endDate));
