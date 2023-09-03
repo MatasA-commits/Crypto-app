@@ -8,8 +8,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
 
-getPricesPerDataRange();
-
 app.get("/optionList", async (req: any, res: any) => {
   const answer = await getOptions();
   res.json(answer);

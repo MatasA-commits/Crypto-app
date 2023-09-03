@@ -1,18 +1,17 @@
 .app {
-	display: flex;
-	flex-direction: column;
-
+  display: flex;
+  flex-direction: column;
 }
 
 .input-error {
-	color: red;
-	margin: 0.2rem 0;
+  color: red;
+  margin: 0.2rem 0;
 }
 
 .date-picker-container {
   display: flex;
   justify-content: center;
-	align-items: center;
+  align-items: center;
   gap: 2rem;
 }
 
@@ -25,8 +24,8 @@
     margin: 2rem;
   }
 
-	.date-picker-container {
-		flex-direction: column;
-		gap: 0.5rem;
-	}
+  .date-picker-container {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
 }
