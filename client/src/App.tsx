@@ -3,15 +3,34 @@ import "./styles/App.scss";
 import Select from "react-select";
 import axios from "axios";
 import DatePickerComponent from "./components/DatePicker";
+import { Line } from "react-chartjs-2";
+import { CategoryScale, Chart } from "chart.js/auto";
 
 const backendUrl = "http://localhost:3600";
 
+type SelectedOptionProps = {
+  value: string;
+  label: string;
+};
+
+type GraphDataProps = {
+  dates: string[];
+  prices: number[];
+};
+
+Chart.register(CategoryScale);
+
 export default function App() {
   const [cryptioOptions, setCryptioOptions] = useState();
-  const [selectedOption, setSelectedOption] = useState();
+  const [selectedOption, setSelectedOption] = useState<
+    SelectedOptionProps | undefined
+  >(undefined);
   const [error, setError] = useState(false);
   const [minDate, setMinDate] = useState();
   const [maxDate, setMaxDate] = useState();
+  const [startDate, setStartDate] = useState();
+  const [endDate, setEndDate] = useState();
+  const [graphData, setGraphData] = useState<GraphDataProps | undefined>();
 
   useEffect(() => {
     axios.get(`${backendUrl}/optionList`).then((response) => {
@@ -19,25 +38,49 @@ export default function App() {
     });
   }, []);
 
+  function getPricesAndDates() {
+    const testData = {
+      labels: graphData?.dates,
+      datasets: [
+        {
+          label:
+            selectedOption !== undefined
+              ? selectedOption.label
+              : "No currency selected",
+          data: graphData?.prices,
+          fill: true,
+          backgroundColor: "rgba(75,192,192,0.2)",
+          borderColor: "rgba(75,192,192,1)",
+        },
+      ],
+    };
+
+    return testData;
+  }
+
+  console.log();
+
+  useEffect(() => {
+    let payload = {
+      startDate,
+      endDate,
+      currency: selectedOption?.value,
+    };
+    axios.post(`${backendUrl}/`, payload).then((response) => {
+      setGraphData(response.data);
+    });
+  }, [endDate, selectedOption, startDate]);
+
+  console.log(graphData);
   function getStartDate(date: any) {
-    const month = date.$d.getUTCMonth() + 1;
-    const day = date.$d.getUTCDate() + 1;
-    const year = date.$d.getUTCFullYear();
     const selecedDate = date.$d.toISOString();
+    setStartDate(selecedDate);
     setMinDate(date);
   }
 
   function getEndDate(date: any) {
-    const month = date.$d.getUTCMonth() + 1;
-    const day = date.$d.getUTCDate() + 1;
-    const year = date.$d.getUTCFullYear();
     const selecedDate = date.$d.toISOString();
-    console.log(selecedDate);
-    /*     console.log({
-      month,
-      day,
-      year,
-    }); */
+    setEndDate(selecedDate);
     setMaxDate(date);
   }
 
@@ -48,7 +91,6 @@ export default function App() {
   }
 
   function handleSelect(data: any) {
-    console.log(data);
     setSelectedOption(data);
   }
 
@@ -88,6 +130,13 @@ export default function App() {
             maxDate={"none"}
           />
         </div>
+      </div>
+      <div>
+        {graphData !== undefined ? (
+          <Line data={getPricesAndDates()}></Line>
+        ) : (
+          <div>No available data</div>
+        )}
       </div>
     </div>
   );
