@@ -3,6 +3,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import "../styles/DatePicker.scss";
+import dayjs from "dayjs";
 
 interface DatePickerComponentProps {
   label: string;
@@ -11,9 +12,11 @@ interface DatePickerComponentProps {
   maxDate: any;
 }
 
+const bitmartCreateDate = new Date("2018-03-15");
+
 const DatePickerComponent = ({
   label,
-  onChangeFunction: onSelect,
+  onChangeFunction,
   minDate,
   maxDate,
 }: DatePickerComponentProps) => {
@@ -23,10 +26,10 @@ const DatePickerComponent = ({
         <p className="label">{label}</p>
         <DatePicker
           slotProps={{ textField: { size: "small" } }}
-          onChange={(date) => (date === null ? "" : onSelect(date))}
-          minDate={"none" ? minDate : ""}
+          onChange={(date) => (date === null ? "" : onChangeFunction(date))}
+          minDate={null ? minDate : dayjs(bitmartCreateDate)}
           disableFuture={true}
-          maxDate={"none" ? maxDate : ""}
+          maxDate={null ? maxDate : ""}
         />
       </LocalizationProvider>
     </>

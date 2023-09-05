@@ -13,7 +13,7 @@ app.get("/optionList", async (req: any, res: any) => {
   res.json(answer);
 });
 
-app.post("/", async (req: any, res: any) => {
+app.post("/getGraphData", async (req: any, res: any) => {
   let data = req.body;
   try {
     if (
@@ -21,20 +21,27 @@ app.post("/", async (req: any, res: any) => {
       data.endDate !== undefined &&
       data.currency !== undefined
     ) {
-      try {
-        const postData = await getUSDTPricesPerDataRange(
-          data.startDate,
-          data.endDate,
-          data.currency
-        );
-        res.send(JSON.stringify(postData));
-      } catch (error) {
-        console.log(error);
-      }
-    } else res.send(undefined);
+      const postData = await getUSDTPricesPerDataRange(
+        data.startDate,
+        data.endDate,
+        data.currency
+      );
+      console.log(
+        "Searched for:",
+        data.lastInput,
+        "\nSelected value:",
+        data.currency,
+        "\n"
+      );
+      res.send(JSON.stringify(postData));
+    }
   } catch (error) {
     console.log(error);
   }
+});
+
+app.post("/getSearchData", (req: any, res: any) => {
+  console.log(req.body);
 });
 
 app.listen(PORT, () => {

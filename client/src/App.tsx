@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./styles/App.scss";
-import Select from "react-select";
+import Select, { SingleValue } from "react-select";
 import axios from "axios";
 import DatePickerComponent from "./components/DatePicker";
 import { Line } from "react-chartjs-2";
@@ -22,14 +22,15 @@ Chart.register(CategoryScale);
 
 export default function App() {
   const [cryptioOptions, setCryptioOptions] = useState();
-  const [selectedOption, setSelectedOption] = useState<
-    SelectedOptionProps | undefined
-  >(undefined);
+  const [selectedOption, setSelectedOption] =
+    useState<SingleValue<SelectedOptionProps> | null>(null);
   const [error, setError] = useState(false);
   const [minDate, setMinDate] = useState();
   const [maxDate, setMaxDate] = useState();
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();
+  const [input, setInput] = useState<string>("");
+  const [lastInput, setLastInput] = useState<string>("");
   const [graphData, setGraphData] = useState<GraphDataProps | undefined>();
 
   useEffect(() => {
@@ -38,40 +39,49 @@ export default function App() {
     });
   }, []);
 
-  function getPricesAndDates() {
-    const testData = {
+  function getFormatedDataForGraph() {
+    const dataForGraphs = {
       labels: graphData?.dates,
       datasets: [
         {
           label:
-            selectedOption !== undefined
-              ? selectedOption.label
+            selectedOption !== null
+              ? selectedOption.label + " Compared to USDT"
               : "No currency selected",
           data: graphData?.prices,
-          fill: true,
+          fill: false,
+          borderDash: [],
+          borderDashOffset: 0.0,
+          pointBorderColor: "rgba(75,192,192,1)",
+          pointBackgroundColor: "#fff",
+          pointBorderWidth: 1,
+          pointHoverRadius: 5,
+          pointHoverBackgroundColor: "rgba(75,192,192,1)",
+          pointHoverBorderColor: "rgba(220,220,220,1)",
+          pointHoverBorderWidth: 2,
+          pointRadius: 1,
+          pointHitRadius: 10,
           backgroundColor: "rgba(75,192,192,0.2)",
           borderColor: "rgba(75,192,192,1)",
         },
       ],
     };
 
-    return testData;
+    return dataForGraphs;
   }
-
-  console.log();
 
   useEffect(() => {
     let payload = {
+      lastInput,
       startDate,
       endDate,
       currency: selectedOption?.value,
     };
-    axios.post(`${backendUrl}/`, payload).then((response) => {
+    axios.post(`${backendUrl}/getGraphData`, payload).then((response) => {
       setGraphData(response.data);
     });
-  }, [endDate, selectedOption, startDate]);
+  }, [endDate, selectedOption, startDate, lastInput]);
 
-  console.log(graphData);
   function getStartDate(date: any) {
     const selecedDate = date.$d.toISOString();
     setStartDate(selecedDate);
@@ -90,14 +100,15 @@ export default function App() {
     } else setError(false);
   }
 
-  function handleSelect(data: any) {
+  function handleSelect(data: SingleValue<SelectedOptionProps>) {
+    setLastInput(input);
     setSelectedOption(data);
   }
 
   return (
     <div className="app">
       <div className="input-error">
-        {error === true ? "There is no cryptocurrency with a name so long" : ""}
+        {error === true ? "Input is too long" : ""}
       </div>
       <div className="dropdown-container">
         <Select
@@ -110,7 +121,10 @@ export default function App() {
           onChange={handleSelect}
           isSearchable={true}
           isMulti={false}
-          onInputChange={handleInput}
+          onInputChange={(input) => {
+            handleInput(input);
+            setInput(input);
+          }}
         />
       </div>
       <div className="date-picker-container">
@@ -118,7 +132,7 @@ export default function App() {
           <DatePickerComponent
             label={"Select start date:"}
             onChangeFunction={(date: any) => getStartDate(date)}
-            minDate={"none"}
+            minDate={null}
             maxDate={maxDate}
           />
         </div>
@@ -127,15 +141,19 @@ export default function App() {
             label={"Select end date:"}
             onChangeFunction={(date: any) => getEndDate(date)}
             minDate={minDate}
-            maxDate={"none"}
+            maxDate={null}
           />
         </div>
       </div>
       <div>
         {graphData !== undefined ? (
-          <Line data={getPricesAndDates()}></Line>
+          <div className="line-chart-container">
+            <Line data={getFormatedDataForGraph()} />
+          </div>
         ) : (
-          <div>No available data</div>
+          <div className="loading-text-container">
+            <p>Select currency and dates</p>
+          </div>
         )}
       </div>
     </div>

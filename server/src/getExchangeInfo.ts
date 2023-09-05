@@ -6,11 +6,16 @@ type BitmartProps = Currency & {
 const exchange = new bitmart();
 
 export async function getOptions() {
-  await exchange.loadMarkets();
+  await exchange.loadMarkets(true);
   const currencies: Dictionary<BitmartProps> =
     exchange.currencies as Dictionary<BitmartProps>;
+  const markets = exchange.symbols;
 
-  const currenciesValueLabelPairs = Object.entries(currencies).map(
+  const validForUSDTComparisonArr = Object.entries(currencies).filter(
+    (currency) => markets.includes(currency[1].id + "/USDT")
+  );
+
+  const currenciesValueLabelPairs = validForUSDTComparisonArr.map(
     (currency) => ({
       value: currency[1].id,
       label: currency[1].name,
@@ -38,23 +43,18 @@ export async function getUSDTPricesPerDataRange(
 
   const data = await exchange.fetchOHLCV(coinUsdtPair, timeframe, since);
 
-  const pricesPerdataRange = data.filter((values) => values[0] < toDate + 1);
+  const pricesPerdataRange = data.filter((values) => values[0] <= toDate);
 
   const pricesArr: number[] = [];
   const dateArr: string[] = [];
 
-  const pricesPerDataRangeWithDates = pricesPerdataRange.map((date) => ({
-    date: exchange.iso8601(date[0]).split("T")[0],
-    price: (date[1] + date[2] + date[3] + date[4]) / 4,
-  }));
+  pricesPerdataRange.forEach(
+    (date) => (
+      dateArr.push(exchange.iso8601(date[0]).split("T")[0]),
+      pricesArr.push((date[1] + date[2] + date[3] + date[4]) / 4)
+    )
+  );
 
-  pricesPerDataRangeWithDates.forEach((value) => {
-    pricesArr.push(value.price);
-    dateArr.push(value.date);
-  });
-
-  console.log(pricesPerDataRangeWithDates);
-  /* pricesPerdataRange.forEach((date) => console.log(exchange.iso8601(date[0]))); */
   return {
     prices: pricesArr,
     dates: dateArr,
