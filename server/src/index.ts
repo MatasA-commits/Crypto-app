@@ -8,13 +8,16 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(
   cors({
-    origin: "*",
+    origin: "https://crypto-app-ten-pi.vercel.app",
   })
 );
 
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT");
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "https://crypto-app-ten-pi.vercel.app"
+  );
+  res.setHeader("Access-Control-Allow-Methods", "POST, GET");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   next();
 });

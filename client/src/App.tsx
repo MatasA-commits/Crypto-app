@@ -6,8 +6,7 @@ import DatePickerComponent from "./components/DatePicker";
 import { Line } from "react-chartjs-2";
 import { CategoryScale, Chart } from "chart.js/auto";
 
-const backendUrl =
-  "https://crypto-app-backend-mms6u1znz-matasa-commits.vercel.app";
+const backendUrl = "https://crypto-app-backend-bice.vercel.app";
 
 type SelectedOptionProps = {
   value: string;
