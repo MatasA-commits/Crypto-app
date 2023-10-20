@@ -6,7 +6,11 @@ const PORT = 3600;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 
 app.get("/optionList", async (req: any, res: any) => {
   const answer = await getOptions();
