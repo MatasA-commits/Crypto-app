@@ -1,4 +1,4 @@
-# IBM task
+# Crypto app
 
 ## System requirements
 
