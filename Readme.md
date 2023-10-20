@@ -1,4 +1,4 @@
-# IBM front end task
+# IBM task
 
 ## System requirements
 
